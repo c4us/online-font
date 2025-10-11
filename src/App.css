@@ -1,0 +1,44 @@
+body {
+  background: linear-gradient(135deg, #f0f4ff, #ffffff);
+  font-family: "Inter", "Segoe UI", Roboto, sans-serif;
+  color: #333;
+}
+
+.card {
+  border: none;
+  border-radius: 1.5rem;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+.btn-primary,
+.btn-success {
+  border-radius: 1rem;
+  padding: 0.6rem 1.2rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.btn-primary:hover,
+.btn-success:hover {
+  transform: scale(1.03);
+}
+
+h3 {
+  font-weight: 700;
+  color: #2b3a67;
+}
+
+.form-control {
+  border-radius: 0.8rem;
+  border: 1px solid #dee2e6;
+}
+
+.form-control:focus {
+  border-color: #5b7cfa;
+  box-shadow: 0 0 0 0.15rem rgba(91, 124, 250, 0.25);
+}
+
+.text-muted-small {
+  font-size: 0.85rem;
+  color: #6c757d;
+}
