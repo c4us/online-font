@@ -12,22 +12,18 @@ const LoginPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
     setError(null);
+    setLoading(true);
 
     try {
-      const response = await axios.post("http://localhost:8080/user/login", {
-        email,
-        password,
-      });
-
-      console.log("Connexion réussie :", response.data);
-      // 🔁 Redirection vers la page de création de produit
-      navigate("/product-create");
-    } catch (err) {
-      setError(
-        err.response?.data || "Erreur lors de la connexion. Vérifiez vos identifiants."
+      await axios.post(
+        "http://localhost:8080/user/login",
+        { email, password },
+        { withCredentials: true }
       );
+      navigate("/structure-create"); // redirection après connexion
+    } catch (err) {
+      setError(err.response?.data || "Erreur lors de la connexion.");
     } finally {
       setLoading(false);
     }
@@ -41,10 +37,9 @@ const LoginPage = () => {
 
         <Form onSubmit={handleSubmit}>
           <Form.Group className="mb-3">
-            <Form.Label>Adresse e-mail</Form.Label>
+            <Form.Label>Email</Form.Label>
             <Form.Control
               type="email"
-              placeholder="ex: jean@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -55,22 +50,23 @@ const LoginPage = () => {
             <Form.Label>Mot de passe</Form.Label>
             <Form.Control
               type="password"
-              placeholder="********"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
             />
           </Form.Group>
 
-          <Button
-            type="submit"
-            variant="primary"
-            className="w-100"
-            disabled={loading}
-          >
+          <Button type="submit" variant="primary" className="w-100" disabled={loading}>
             {loading ? <Spinner animation="border" size="sm" /> : "Se connecter"}
           </Button>
         </Form>
+
+        <div className="text-center mt-3">
+          <span>Pas encore de compte ? </span>
+          <Button variant="link" onClick={() => navigate("/terms")}>
+            Créer un compte
+          </Button>
+        </div>
       </Card>
     </div>
   );

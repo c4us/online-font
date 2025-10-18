@@ -16,7 +16,7 @@ const CategoryPage = () => {
 
   const fetchCategories = async () => {
     try {
-      const { data } = await axios.get("http://localhost:8080/api/categories");
+      const { data } = await axios.get("http://localhost:8080/structure");
       setCategories(data);
     } catch (err) {
       console.error(err);
@@ -32,7 +32,7 @@ const CategoryPage = () => {
     setLoading(true);
 
     try {
-      await axios.post("http://localhost:8080/api/categories", {
+      await axios.post("http://localhost:8080/structure", {
         name: categoryName,
       });
 

@@ -1,44 +1,41 @@
 import React, { useState } from "react";
-import { Button, Card } from "react-bootstrap";
+import { Card, Button, Form } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 
-const TermsScreen = () => {
+const TermsPage = () => {
   const [accepted, setAccepted] = useState(false);
   const navigate = useNavigate();
 
-  const handleAccept = () => {
-    if (accepted) navigate("/register");
-    else alert("Veuillez accepter les conditions pour continuer.");
+  const handleNext = () => {
+    if (accepted) {
+      navigate("/register"); // étape suivante
+    } else {
+      alert("Vous devez accepter les conditions générales pour continuer.");
+    }
   };
 
   return (
-    <div className="d-flex justify-content-center align-items-center vh-100">
-      <Card style={{ width: "40rem" }} className="p-4">
-        <h3 className="text-center mb-3">Conditions d’utilisation</h3>
-        <div
-          className="border rounded p-3 mb-3 bg-light"
-          style={{ maxHeight: "200px", overflowY: "auto" }}
-        >
+    <div className="d-flex justify-content-center align-items-center vh-100 bg-light">
+      <Card className="p-4 shadow-sm" style={{ width: "28rem" }}>
+        <h3 className="text-center mb-4">Conditions Générales</h3>
+
+        <div className="mb-3" style={{ maxHeight: "200px", overflowY: "auto" }}>
           <p>
-            Bienvenue ! Avant de continuer, veuillez lire attentivement nos
-            conditions générales d’utilisation. En acceptant, vous reconnaissez
-            comprendre et respecter les règles relatives à la confidentialité et
-            à l’utilisation de vos données personnelles.
+            {/* Exemple de texte CGU */}
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
           </p>
         </div>
-        <div className="form-check mb-3">
-          <input
+
+        <Form.Group className="mb-3">
+          <Form.Check
             type="checkbox"
-            className="form-check-input"
-            id="accept"
+            label="J'accepte les conditions générales"
             checked={accepted}
             onChange={(e) => setAccepted(e.target.checked)}
           />
-          <label htmlFor="accept" className="form-check-label">
-            J’accepte les conditions d’utilisation
-          </label>
-        </div>
-        <Button variant="primary" className="w-100" onClick={handleAccept}>
+        </Form.Group>
+
+        <Button variant="primary" className="w-100" onClick={handleNext}>
           Continuer
         </Button>
       </Card>
@@ -46,4 +43,4 @@ const TermsScreen = () => {
   );
 };
 
-export default TermsScreen;
+export default TermsPage;

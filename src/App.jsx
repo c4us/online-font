@@ -10,12 +10,14 @@ import ConfirmationSuccessPage from "./components/ConfirmationSuccessPage";
 
 import "./App.css";
 import CategoryPage from "./components/CategoriesCreatePage";
+import StructureCreatePage from "./components/StructureCreatePage";
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<TermsScreen />} />
+        <Route path="/" element={<LoginPage />} />
+        <Route path="terms" element={<TermsScreen />} />
         <Route path="/register" element={<RegisterForm />} />
         <Route path="/check-email" element={<CheckEmailScreen />} />
         <Route path="/login" element={<LoginPage />} />
@@ -26,7 +28,9 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/confirmation-error" element={<ConfirmationErrorPage />} />
         <Route path="/confirmation-success" element={<ConfirmationSuccessPage />} />
-        <Route path="/product-create" element={<CategoryPage/>} />
+        <Route path="/structure-create" element={<StructureCreatePage />} />
+        
+
 
       </Routes>
     </Router>
