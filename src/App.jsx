@@ -11,6 +11,9 @@ import ConfirmationSuccessPage from "./components/ConfirmationSuccessPage";
 import "./App.css";
 import CategoryPage from "./components/CategoriesCreatePage";
 import StructureCreatePage from "./components/StructureCreatePage";
+import StructureDashboard from "./components/StructureDashboard";
+import AjouterCategorie from "./components/AjouterCategorie";
+import ProduitsPage from "./components/ProduitsPage";
 
 function App() {
   return (
@@ -21,17 +24,17 @@ function App() {
         <Route path="/register" element={<RegisterForm />} />
         <Route path="/check-email" element={<CheckEmailScreen />} />
         <Route path="/login" element={<LoginPage />} />
-        <Route
-          path="/confirmation-error"
-          element={<h3>❌ Lien de confirmation invalide</h3>}
-        />
+        <Route path="/confirmation-error" element={<ConfirmationErrorPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/confirmation-error" element={<ConfirmationErrorPage />} />
-        <Route path="/confirmation-success" element={<ConfirmationSuccessPage />} />
+        <Route
+          path="/confirmation-success"
+          element={<ConfirmationSuccessPage />}
+        />
+        <Route path="/dashboard" element={<StructureDashboard />} />
         <Route path="/structure-create" element={<StructureCreatePage />} />
-        
-
-
+        <Route path="/ajouter-categorie/:id" element={<AjouterCategorie />} />
+        <Route path="/produits/structure/:id" element={<ProduitsPage />} />
       </Routes>
     </Router>
   );

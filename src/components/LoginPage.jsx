@@ -16,12 +16,17 @@ const LoginPage = () => {
     setLoading(true);
 
     try {
-      await axios.post(
+      const res = await axios.post(
         "http://localhost:8080/user/login",
         { email, password },
         { withCredentials: true }
       );
-      navigate("/structure-create"); // redirection après connexion
+
+      // ✅ Sauvegarde de l'utilisateur connecté (renvoyé par le backend)
+      localStorage.setItem("user", JSON.stringify(res.data));
+      console.log(res.data);
+
+      navigate("/dashboard");
     } catch (err) {
       setError(err.response?.data || "Erreur lors de la connexion.");
     } finally {

@@ -1,10 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Card, Form, Button, Alert, Spinner, Row, Col, Image } from "react-bootstrap";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const StructureCreatePage = () => {
+  const navigate = useNavigate();
+
+  // 🔹 Vérifier que l'utilisateur est connecté
+  const user = JSON.parse(localStorage.getItem("user"));
+  useEffect(() => {
+    if (!user) {
+      navigate("/login");
+    }
+  }, [navigate, user]);
+
   const initialStructure = {
-    id:"",
     nomStructure: "",
     phone1Structure: "",
     phone2Structure: "",
@@ -17,6 +27,7 @@ const StructureCreatePage = () => {
     disponibiliteStructure: "",
     geoLocStructure: "",
     descriptionStructure: "",
+    createdUserId: user?.id || "", // 🔹 ID de l'utilisateur connecté
   };
 
   const villesBurkina = ["Ouagadougou", "Bobo-Dioulasso", "Koudougou", "Ouahigouya", "Autre"];
@@ -26,17 +37,12 @@ const StructureCreatePage = () => {
   const [photoPreview, setPhotoPreview] = useState(null);
   const [message, setMessage] = useState(null);
   const [error, setError] = useState(null);
-  const [loading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   // 🔹 Gestion des champs
   const handleChange = (e) => {
     const { name, value } = e.target;
     setStructure({ ...structure, [name]: value });
-
-    // Reset ville si le pays change
-    if (name === "paysStructure" && value !== "Burkina Faso") {
-      setStructure((prev) => ({ ...prev, villeStructure: "" }));
-    }
   };
 
   const handlePhotoChange = (e) => {
@@ -51,7 +57,6 @@ const StructureCreatePage = () => {
     }
   };
 
-  // 🔹 Géolocalisation automatique
   const handleGetLocation = () => {
     if (!navigator.geolocation) {
       alert("Géolocalisation non supportée par votre navigateur");
@@ -68,7 +73,6 @@ const StructureCreatePage = () => {
     );
   };
 
-  // 🔹 Réinitialiser le formulaire
   const handleReset = () => {
     setStructure(initialStructure);
     setPhotoFile(null);
@@ -77,58 +81,56 @@ const StructureCreatePage = () => {
     setError(null);
   };
 
-  // 🔹 Soumission
- const handleSubmit = async (e) => {
-  e.preventDefault();
+  // 🔹 Soumission du formulaire
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+    setMessage(null);
 
-  try {
-    // 1️⃣ Création de la structure (sans photo)
-    const res = await axios.post(
-      "http://localhost:8080/structure",
-      structure,
-      { withCredentials: true }
-    );
-    
-    console.log("Réponse du backend:", res.data);
+    try {
+      // 1️⃣ Envoi des données de la structure
+      const res = await axios.post("http://localhost:8080/structure", structure, {
+        withCredentials: true,
+      });
 
+      const newStructure = res.data;
 
-    const newStructure = res.data;
+      // 2️⃣ Upload de la photo (si présente)
+      if (photoFile) {
+        const formData = new FormData();
+        formData.append("id", newStructure.idStructure);
+        formData.append("file", photoFile);
 
-    // 2️⃣ Upload de la photo si présente
-    if (photoFile) {
-      const formData = new FormData();
-      formData.append("id", newStructure.idStructure);
-      formData.append("file", photoFile);
-
-      await axios.put(
-        "http://localhost:8080/structure/photo",
-        formData,
-        {
+        await axios.put("http://localhost:8080/structure/photo", formData, {
           withCredentials: true,
           headers: { "Content-Type": "multipart/form-data" },
-        }
-      );
+        });
+      }
+
+      // 3️⃣ Message + redirection vers dashboard
+      setMessage("✅ Structure créée avec succès !");
+      setTimeout(() => navigate("/dashboard"), 1500); // Redirection après 1,5s
+
+    } catch (err) {
+      console.error("Erreur lors de la création :", err);
+      setError("❌ Erreur lors de la création de la structure.");
+    } finally {
+      setLoading(false);
     }
-
-    alert("✅ Structure créée avec succès !");
-  } catch (err) {
-    console.error("Erreur:", err);
-    alert("❌ Erreur lors de la création de la structure");
-  }
-};
-
-
+  };
 
   return (
     <div className="d-flex justify-content-center align-items-start py-5 bg-light">
       <Card className="p-4 shadow-sm" style={{ width: "80%" }}>
-        <h3 className="text-center mb-4">Créer une Structure</h3>
+        <h3 className="text-center mb-4">Créer mon bussiness en ligne</h3>
 
         {message && <Alert variant="success">{message}</Alert>}
         {error && <Alert variant="danger">{error}</Alert>}
 
         <Form onSubmit={handleSubmit}>
           <Row>
+            {/* Colonne gauche */}
             <Col md={6}>
               <Form.Group className="mb-3">
                 <Form.Label>Nom de la structure</Form.Label>
@@ -185,12 +187,11 @@ const StructureCreatePage = () => {
                   disabled={structure.paysStructure !== "Burkina Faso"}
                 >
                   <option value="">Sélectionner la ville</option>
-                  {structure.paysStructure === "Burkina Faso" &&
-                    villesBurkina.map((ville) => (
-                      <option key={ville} value={ville}>
-                        {ville}
-                      </option>
-                    ))}
+                  {villesBurkina.map((ville) => (
+                    <option key={ville} value={ville}>
+                      {ville}
+                    </option>
+                  ))}
                 </Form.Select>
               </Form.Group>
 
@@ -205,6 +206,7 @@ const StructureCreatePage = () => {
               </Form.Group>
             </Col>
 
+            {/* Colonne droite */}
             <Col md={6}>
               <Form.Group className="mb-3">
                 <Form.Label>Code Postal</Form.Label>
@@ -254,7 +256,6 @@ const StructureCreatePage = () => {
                   name="descriptionStructure"
                   value={structure.descriptionStructure}
                   onChange={handleChange}
-                  placeholder="Description de la structure"
                 />
               </Form.Group>
 
