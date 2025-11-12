@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
+  const [identifier, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -18,7 +18,7 @@ const LoginPage = () => {
     try {
       const res = await axios.post(
         "http://localhost:8080/user/login",
-        { email, password },
+        { identifier, password },
         { withCredentials: true }
       );
 
@@ -44,8 +44,8 @@ const LoginPage = () => {
           <Form.Group className="mb-3">
             <Form.Label>Email</Form.Label>
             <Form.Control
-              type="email"
-              value={email}
+            //  type="email"
+              value={identifier}
               onChange={(e) => setEmail(e.target.value)}
               required
             />
